@@ -235,7 +235,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-      console.log("I am printing from javascript");
+      let attention = Prompt();
 
       // Disabling form submissions if there are invalid fields
       (function () {
@@ -269,12 +269,14 @@
         .addEventListener("click", function () {
           // notify("You clicked the button", "error");
 
-          notifyModal(
-            "title",
-            "<em>You clicked the button</em>",
-            "success",
-            "Text for the button"
-          );
+          // notifyModal(
+          //   "title",
+          //   "<em>You clicked the button</em>",
+          //   "success",
+          //   "Text for the button"
+          // );
+
+          attention.success();
         });
 
       const elem = document.getElementById("reservation-dates");
@@ -289,6 +291,21 @@
           icon: icon, // 'success', 'error', 'warning', 'info', 'question'
           confirmButtonText: confirmationButtonText,
         });
+      }
+
+      function Prompt() {
+        let toast = function () {
+          console.log("clicked button and got toast");
+        };
+
+        let success = function () {
+          console.log("clicked button and got success");
+        };
+
+        return {
+          toast: toast,
+          success: success,
+        };
       }
     </script>
   </body>
