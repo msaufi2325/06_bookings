@@ -276,7 +276,19 @@
           //   "Text for the button"
           // );
 
-          attention.toast({ msg: "You clicked the button", icon: "success" });
+          // attention.toast({ msg: "You clicked the button", icon: "error" });
+
+          // attention.success({
+          //   msg: "You clicked the button",
+          //   title: "Success",
+          //   footer: "This is the footer",
+          // });
+
+          attention.error({
+            msg: "You clicked the button",
+            title: "Opps! Something went wrong!",
+            footer: "This is the footer",
+          });
         });
 
       const elem = document.getElementById("reservation-dates");
@@ -319,13 +331,32 @@
           Toast.fire({});
         };
 
-        let success = function () {
-          console.log("clicked button and got success");
+        let success = function (c) {
+          const { msg = "", title = "", footer = "" } = c;
+
+          Swal.fire({
+            icon: "success",
+            title: title,
+            text: msg,
+            footer: footer,
+          });
+        };
+
+        let error = function (c) {
+          const { msg = "", title = "", footer = "" } = c;
+
+          Swal.fire({
+            icon: "error",
+            title: title,
+            text: msg,
+            footer: footer,
+          });
         };
 
         return {
           toast: toast,
           success: success,
+          error: error,
         };
       }
     </script>
