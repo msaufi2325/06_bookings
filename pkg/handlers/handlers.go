@@ -56,10 +56,12 @@ func (m *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
 	render.RenderTemplate(w, "make-reservation.page.gohtml", &models.TemplateData{})
 }
 
+// Generals renders the room page
 func (m *Repository) Generals(w http.ResponseWriter, r *http.Request) {
 	render.RenderTemplate(w, "generals.page.gohtml", &models.TemplateData{})
 }
 
+// Majors renders the room page
 func (m *Repository) Majors(w http.ResponseWriter, r *http.Request) {
 	render.RenderTemplate(w, "majors.page.gohtml", &models.TemplateData{})
 }
