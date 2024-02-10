@@ -64,9 +64,24 @@
             </div>
         </form>
         `;
+
       attention.custom({
-        title: "Choose your dates",
         msg: html,
+        title: "Choose your dates",
+        callback: function (result) {
+          console.log("called");
+
+          let form = document.getElementById("check-availability-form");
+          let formData = new FormData(form);
+
+          fetch("/search-availability-json")
+            .then((response) => response.json())
+            .then((data) => {
+              console.log(data);
+              console.log(data.ok);
+              console.log(data.message);
+            });
+        },
       });
     });
 </script>
