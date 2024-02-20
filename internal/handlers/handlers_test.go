@@ -75,3 +75,5 @@ func TestHandlers(t *testing.T) {
 		}
 	}
 }
+
+// go test -coverprofile=coverage.out && go tool cover -html=coverage.out
