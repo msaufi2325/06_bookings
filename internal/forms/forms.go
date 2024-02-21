@@ -40,7 +40,7 @@ func (f *Form) Required(fields ...string) {
 
 // Has checks if form field is in post and not empty
 func (f *Form) Has(field string, r *http.Request) bool {
-	x := r.Form.Get(field)
+	x := f.Get(field)
 	if x == "" {
 		f.Errors.Add(field, "This field cannot be blank")
 		return false
@@ -50,7 +50,7 @@ func (f *Form) Has(field string, r *http.Request) bool {
 
 // MinLength checks for string minimum length
 func (f *Form) MinLength(field string, length int, r *http.Request) bool {
-	x := r.Form.Get(field)
+	x := f.Get(field)
 	if len(x) < length {
 		f.Errors.Add(field, fmt.Sprintf("This field is too short (minimum is %d characters)", length))
 		return false
