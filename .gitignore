@@ -20,3 +20,5 @@
 # go.mod
 
 # End of official Go gitignore template
+
+database.yml
