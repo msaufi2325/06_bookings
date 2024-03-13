@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/go-chi/chi"
 	"github.com/msaufi2325/06_bookings/internal/config"
 	"github.com/msaufi2325/06_bookings/internal/driver"
 	"github.com/msaufi2325/06_bookings/internal/forms"
@@ -250,4 +251,24 @@ func (m *Repository) ReservationSummary(w http.ResponseWriter, r *http.Request) 
 
 	// delete the reservation from the session
 	m.App.Session.Remove(r.Context(), "reservation")
+}
+
+func (m *Repository) ChooseRoom(w http.ResponseWriter, r *http.Request) {
+	roomID, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	res, ok := m.App.Session.Get(r.Context(), "reservation").(models.Reservation)
+	if !ok {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	res.RoomID = roomID
+
+	m.App.Session.Put(r.Context(), "reservation", res)
+
+	http.Redirect(w, r, "/make-reservation", http.StatusSeeOther)
 }
