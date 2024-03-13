@@ -6,7 +6,7 @@
     <div class="col">
       <h1>Choose a Room</h1>
 
-      {{$room := index .Data "rooms"}}
+      {{$rooms := index .Data "rooms"}}
 
       {{range $rooms}}
       {{.RoomName}}<br />
