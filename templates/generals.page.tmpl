@@ -94,9 +94,11 @@
           })
             .then((response) => response.json())
             .then((data) => {
-              console.log(data);
-              console.log(data.ok);
-              console.log(data.message);
+              if (data.ok) {
+                console.log("room is available");
+              } else {
+                console.log("room is not available");
+              }
             });
         },
       });
