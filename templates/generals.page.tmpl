@@ -91,13 +91,13 @@
           fetch("/search-availability-json", {
             method: "post",
             body: formData,
-            showConfirmButton: false,
           })
             .then((response) => response.json())
             .then((data) => {
               if (data.ok) {
                 attention.custom({
                   icon: "success",
+                  showConfirmButton: false,
                   msg: "<p>Room is available!</p>"
                       + "<p><a href='#!' class='btn btn-primary'></p>"
                       + "Book Now</a></p>",
