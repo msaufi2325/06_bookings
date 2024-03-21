@@ -1,47 +1,4 @@
-{{template "base" .}}
-
-{{define "content"}}
-<div class="container">
-  <div class="row">
-    <div class="col">
-      <img
-        src="/static/images/majors-suite.png"
-        class="img-fluid img-thumbnail mx-auto d-block room-image"
-        alt="room image"
-      />
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col">
-      <h1 class="text-center mt-4">Major's Suite</h1>
-      <p>
-        Your home away form home, set on the majestic waters of the Atlantic
-        Ocean, this will be a vacation to remember. Your home away form home,
-        set on the majestic waters of the Atlantic Ocean, this will be a
-        vacation to remember. Your home away form home, set on the majestic
-        waters of the Atlantic Ocean, this will be a vacation to remember. Your
-        home away form home, set on the majestic waters of the Atlantic Ocean,
-        this will be a vacation to remember. Your home away form home, set on
-        the majestic waters of the Atlantic Ocean, this will be a vacation to
-        remember. Your home away form home, set on the majestic waters of the
-        Atlantic Ocean, this will be a vacation to remember.
-      </p>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col text-center">
-      <a id="check-availability-button" href="#!" class="btn btn-success"
-        >Check Availability</a
-      >
-    </div>
-  </div>
-</div>
-{{ end }}
-
-{{define "js"}}
-<script>
+function checkRoomAvailability(roomId) {
   document
     .getElementById("check-availability-button")
     .addEventListener("click", function () {
@@ -84,7 +41,7 @@
           let form = document.getElementById("check-availability-form");
           let formData = new FormData(form);
           formData.append("csrf_token", "{{.CSRFToken}}");
-          formData.append("room_id", "2");
+          formData.append("room_id", roomId);
 
           fetch("/search-availability-json", {
             method: "post",
@@ -117,5 +74,4 @@
         },
       });
     });
-</script>
-{{ end }}
+}
