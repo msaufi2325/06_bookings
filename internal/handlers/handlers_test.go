@@ -123,6 +123,10 @@ func TestRepository_Reservation(t *testing.T) {
 	}
 }
 
+func TestRepository_PostReservation(t *testing.T) {
+
+}
+
 func getCtx(req *http.Request) context.Context {
 	ctx, err := session.Load(req.Context(), req.Header.Get("X-Session"))
 	if err != nil {
