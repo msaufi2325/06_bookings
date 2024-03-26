@@ -166,7 +166,7 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 	newReservationID, err := m.DB.InsertReservation(reservation)
 	if err != nil {
 		m.App.Session.Put(r.Context(), "error", "Error inserting reservation into database")
-		http.Redirect(w, r, "/make-reservation", http.StatusTemporaryRedirect)
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
 
@@ -181,7 +181,7 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 	err = m.DB.InsertRoomRestriction(restriction)
 	if err != nil {
 		m.App.Session.Put(r.Context(), "error", "Error inserting room restriction into database")
-		http.Redirect(w, r, "/make-reservation", http.StatusTemporaryRedirect)
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
 
