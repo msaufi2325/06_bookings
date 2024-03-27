@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/msaufi2325/06_bookings/internal/models"
@@ -124,7 +125,32 @@ func TestRepository_Reservation(t *testing.T) {
 }
 
 func TestRepository_PostReservation(t *testing.T) {
+	reqBody := "start_date=2050-01-01"
+	reqBody += "&end_date=2050-01-02"
+	reqBody += "&first_name=John"
+	reqBody += "&last_name=Smith"
+	reqBody += "&email=john@smith.com"
+	reqBody += "&phone=555-555-5555"
+	reqBody += "&room_id=1"
 
+	req, err := http.NewRequest("POST", "/make-reservation", strings.NewReader(reqBody))
+	if err != nil {
+		t.Fatal(err)
+	}
+	ctx := getCtx(req)
+	req = req.WithContext(ctx)
+
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	rr := httptest.NewRecorder()
+
+	handler := http.HandlerFunc(Repo.PostReservation)
+
+	handler.ServeHTTP(rr, req)
+
+	if rr.Code != http.StatusSeeOther {
+		t.Errorf("PostReservation handler returned wrong response code: got %d, want %d", rr.Code, http.StatusSeeOther)
+	}
 }
 
 func getCtx(req *http.Request) context.Context {
