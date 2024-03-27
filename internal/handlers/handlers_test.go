@@ -167,6 +167,103 @@ func TestRepository_PostReservation(t *testing.T) {
 	if rr.Code != http.StatusTemporaryRedirect {
 		t.Errorf("PostReservation handler returned wrong response code for missing post body: got %d, want %d", rr.Code, http.StatusTemporaryRedirect)
 	}
+
+	// test for invalid start date
+	reqBody = "start_date=invalid"
+	reqBody += "&end_date=2050-01-02"
+	reqBody += "&first_name=John"
+	reqBody += "&last_name=Smith"
+	reqBody += "&email=john@smith.com"
+	reqBody += "&phone=555-555-5555"
+	reqBody += "&room_id=1"
+
+	req, err = http.NewRequest("POST", "/make-reservation", strings.NewReader(reqBody))
+	if err != nil {
+		t.Fatal(err)
+	}
+	ctx = getCtx(req)
+	req = req.WithContext(ctx)
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	rr = httptest.NewRecorder()
+
+	handler.ServeHTTP(rr, req)
+
+	if rr.Code != http.StatusTemporaryRedirect {
+		t.Errorf("PostReservation handler returned wrong response code for invalid start date: got %d, want %d", rr.Code, http.StatusTemporaryRedirect)
+	}
+
+	// test for invalid end date
+	reqBody = "start_date=2050-01-01"
+	reqBody += "&end_date=invalid"
+	reqBody += "&first_name=John"
+	reqBody += "&last_name=Smith"
+	reqBody += "&email=john@smith.com"
+	reqBody += "&phone=555-555-5555"
+	reqBody += "&room_id=1"
+
+	req, err = http.NewRequest("POST", "/make-reservation", strings.NewReader(reqBody))
+	if err != nil {
+		t.Fatal(err)
+	}
+	ctx = getCtx(req)
+	req = req.WithContext(ctx)
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	rr = httptest.NewRecorder()
+
+	handler.ServeHTTP(rr, req)
+
+	if rr.Code != http.StatusTemporaryRedirect {
+		t.Errorf("PostReservation handler returned wrong response code for invalid end date: got %d, want %d", rr.Code, http.StatusTemporaryRedirect)
+	}
+
+	// test for invalid room id
+	reqBody = "start_date=2050-01-01"
+	reqBody += "&end_date=2050-01-02"
+	reqBody += "&first_name=John"
+	reqBody += "&last_name=Smith"
+	reqBody += "&email=john@smith.com"
+	reqBody += "&phone=555-555-5555"
+	reqBody += "&room_id=invalid"
+
+	req, err = http.NewRequest("POST", "/make-reservation", strings.NewReader(reqBody))
+	if err != nil {
+		t.Fatal(err)
+	}
+	ctx = getCtx(req)
+	req = req.WithContext(ctx)
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	rr = httptest.NewRecorder()
+
+	handler.ServeHTTP(rr, req)
+
+	if rr.Code != http.StatusTemporaryRedirect {
+		t.Errorf("PostReservation handler returned wrong response code for invalid room id: got %d, want %d", rr.Code, http.StatusTemporaryRedirect)
+	}
+
+	// test for invalid data
+	reqBody = "start_date=2050-01-01"
+	reqBody += "&end_date=2050-01-02"
+	reqBody += "&first_name=J"
+	reqBody += "&last_name=Smith"
+	reqBody += "&email=john@smith.com"
+	reqBody += "&phone=555-555-5555"
+	reqBody += "&room_id=1"
+
+	req, err = http.NewRequest("POST", "/make-reservation", strings.NewReader(reqBody))
+	if err != nil {
+		t.Fatal(err)
+	}
+	ctx = getCtx(req)
+	req = req.WithContext(ctx)
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	rr = httptest.NewRecorder()
+
+	handler.ServeHTTP(rr, req)
+
+	if rr.Code != http.StatusSeeOther {
+		t.Errorf("PostReservation handler returned wrong response code for invalid data: got %d, want %d", rr.Code, http.StatusSeeOther)
+	}
+
 }
 
 func getCtx(req *http.Request) context.Context {
