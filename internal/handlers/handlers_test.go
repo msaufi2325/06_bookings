@@ -162,6 +162,8 @@ func TestRepository_PostReservation(t *testing.T) {
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	rr = httptest.NewRecorder()
 
+	handler = http.HandlerFunc(Repo.PostReservation)
+
 	handler.ServeHTTP(rr, req)
 
 	if rr.Code != http.StatusTemporaryRedirect {
@@ -185,6 +187,8 @@ func TestRepository_PostReservation(t *testing.T) {
 	req = req.WithContext(ctx)
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	rr = httptest.NewRecorder()
+
+	handler = http.HandlerFunc(Repo.PostReservation)
 
 	handler.ServeHTTP(rr, req)
 
@@ -210,6 +214,8 @@ func TestRepository_PostReservation(t *testing.T) {
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	rr = httptest.NewRecorder()
 
+	handler = http.HandlerFunc(Repo.PostReservation)
+
 	handler.ServeHTTP(rr, req)
 
 	if rr.Code != http.StatusTemporaryRedirect {
@@ -233,6 +239,8 @@ func TestRepository_PostReservation(t *testing.T) {
 	req = req.WithContext(ctx)
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	rr = httptest.NewRecorder()
+
+	handler = http.HandlerFunc(Repo.PostReservation)
 
 	handler.ServeHTTP(rr, req)
 
@@ -258,10 +266,38 @@ func TestRepository_PostReservation(t *testing.T) {
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	rr = httptest.NewRecorder()
 
+	handler = http.HandlerFunc(Repo.PostReservation)
+
 	handler.ServeHTTP(rr, req)
 
 	if rr.Code != http.StatusSeeOther {
 		t.Errorf("PostReservation handler returned wrong response code for invalid data: got %d, want %d", rr.Code, http.StatusSeeOther)
+	}
+
+	// test for failure to insert reservation into database
+	reqBody = "start_date=2050-01-01"
+	reqBody += "&end_date=2050-01-02"
+	reqBody += "&first_name=John"
+	reqBody += "&last_name=Smith"
+	reqBody += "&email=john@smith.com"
+	reqBody += "&phone=555-555-5555"
+	reqBody += "&room_id=2"
+
+	req, err = http.NewRequest("POST", "/make-reservation", strings.NewReader(reqBody))
+	if err != nil {
+		t.Fatal(err)
+	}
+	ctx = getCtx(req)
+	req = req.WithContext(ctx)
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	rr = httptest.NewRecorder()
+
+	handler = http.HandlerFunc(Repo.PostReservation)
+
+	handler.ServeHTTP(rr, req)
+
+	if rr.Code != http.StatusTemporaryRedirect {
+		t.Errorf("PostReservation handler returned wrong response code for failure to insert reservation into database: got %d, want %d", rr.Code, http.StatusTemporaryRedirect)
 	}
 
 }
