@@ -16,6 +16,8 @@ import (
 // 	value string
 // }
 
+// go test -coverprofile=coverage.out && go tool cover -html=coverage.out
+
 var theTests = []struct {
 	name               string
 	url                string
@@ -64,8 +66,6 @@ func TestHandlers(t *testing.T) {
 		}
 	}
 }
-
-// go test -coverprofile=coverage.out && go tool cover -html=coverage.out
 
 func TestRepository_Reservation(t *testing.T) {
 	reservation := models.Reservation{
@@ -150,6 +150,22 @@ func TestRepository_PostReservation(t *testing.T) {
 
 	if rr.Code != http.StatusSeeOther {
 		t.Errorf("PostReservation handler returned wrong response code: got %d, want %d", rr.Code, http.StatusSeeOther)
+	}
+
+	// test for missing post body
+	req, err = http.NewRequest("POST", "/make-reservation", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	ctx = getCtx(req)
+	req = req.WithContext(ctx)
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	rr = httptest.NewRecorder()
+
+	handler.ServeHTTP(rr, req)
+
+	if rr.Code != http.StatusTemporaryRedirect {
+		t.Errorf("PostReservation handler returned wrong response code for missing post body: got %d, want %d", rr.Code, http.StatusTemporaryRedirect)
 	}
 }
 
