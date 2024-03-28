@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"strings"
 	"testing"
 
@@ -126,15 +127,24 @@ func TestRepository_Reservation(t *testing.T) {
 }
 
 func TestRepository_PostReservation(t *testing.T) {
-	reqBody := "start_date=2050-01-01"
-	reqBody += "&end_date=2050-01-02"
-	reqBody += "&first_name=John"
-	reqBody += "&last_name=Smith"
-	reqBody += "&email=john@smith.com"
-	reqBody += "&phone=555-555-5555"
-	reqBody += "&room_id=1"
+	// reqBody := "start_date=2050-01-01"
+	// reqBody += "&end_date=2050-01-02"
+	// reqBody += "&first_name=John"
+	// reqBody += "&last_name=Smith"
+	// reqBody += "&email=john@smith.com"
+	// reqBody += "&phone=555-555-5555"
+	// reqBody += "&room_id=1"
 
-	req, err := http.NewRequest("POST", "/make-reservation", strings.NewReader(reqBody))
+	postedData := url.Values{}
+	postedData.Add("start_date", "2050-01-01")
+	postedData.Add("end_date", "2050-01-02")
+	postedData.Add("first_name", "John")
+	postedData.Add("last_name", "Smith")
+	postedData.Add("email", "john@smith.com")
+	postedData.Add("phone", "555-555-5555")
+	postedData.Add("room_id", "1")
+
+	req, err := http.NewRequest("POST", "/make-reservation", strings.NewReader(postedData.Encode()))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -172,7 +182,7 @@ func TestRepository_PostReservation(t *testing.T) {
 	}
 
 	// test for invalid start date
-	reqBody = "start_date=invalid"
+	reqBody := "start_date=invalid"
 	reqBody += "&end_date=2050-01-02"
 	reqBody += "&first_name=John"
 	reqBody += "&last_name=Smith"
