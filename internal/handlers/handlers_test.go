@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"encoding/json"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -325,7 +326,41 @@ func TestRepository_PostReservation(t *testing.T) {
 	if rr.Code != http.StatusTemporaryRedirect {
 		t.Errorf("PostReservation handler returned wrong response code for failure to insert room restriction into database: got %d, want %d", rr.Code, http.StatusTemporaryRedirect)
 	}
+}
 
+func TestRespository_AvailabilityJSON(t *testing.T) {
+	// first case: rooms are not available
+	reqBody := "start=2050-01-01"
+	reqBody += "&end=2050-01-02"
+	reqBody += "&room_id=1"
+
+	// create request
+	req, err := http.NewRequest("POST", "/search-availability-json", strings.NewReader(reqBody))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// get context with session
+	ctx := getCtx(req)
+	req = req.WithContext(ctx)
+
+	// set the request header
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	// make handler handlerfunc
+	handler := http.HandlerFunc(Repo.AvailabilityJSON)
+
+	// get response recorder
+	rr := httptest.NewRecorder()
+
+	// make request to our handler
+	handler.ServeHTTP(rr, req)
+
+	var j jsonResponse
+	err = json.Unmarshal(rr.Body.Bytes(), &j)
+	if err != nil {
+		t.Error("failed to parse json")
+	}
 }
 
 func getCtx(req *http.Request) context.Context {
