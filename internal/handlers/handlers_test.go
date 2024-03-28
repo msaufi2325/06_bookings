@@ -7,9 +7,11 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"reflect"
 	"strings"
 	"testing"
 
+	"github.com/msaufi2325/06_bookings/internal/driver"
 	"github.com/msaufi2325/06_bookings/internal/models"
 )
 
@@ -335,6 +337,15 @@ func TestRepository_PostReservation(t *testing.T) {
 
 	if rr.Code != http.StatusTemporaryRedirect {
 		t.Errorf("PostReservation handler returned wrong response code for failure to insert room restriction into database: got %d, want %d", rr.Code, http.StatusTemporaryRedirect)
+	}
+}
+
+func TestNewRepo(t *testing.T) {
+	var db driver.DB
+	testRepo := NewRepo(&app, &db)
+
+	if reflect.TypeOf(testRepo).String() != "*handlers.Repository" {
+		t.Errorf("Did not get correct type from NewRepo: got %s, wanted *Rejpository", reflect.TypeOf(testRepo).String())
 	}
 }
 
