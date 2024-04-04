@@ -38,15 +38,6 @@ func main() {
 	fmt.Println("Starting mail listener...")
 	listenForMail()
 
-	// msg := models.MailData{
-	// 	To:      "john@do.ca",
-	// 	From:    "me@here.com",
-	// 	Subject: "Some subject",
-	// 	Content: "",
-	// }
-
-	// app.MailChan <- msg
-
 	// from := "me@here.com"
 	// auth := smtp.PlainAuth("", from, "", "localhost")
 	// err = smtp.SendMail("localhost:1025", auth, from, []string{"you@there.com"}, []byte("Hello, world!"))
