@@ -241,19 +241,21 @@ func (m *Repository) PostAvailability(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	start := r.Form.Get("start") // name of the input field
-	end := r.Form.Get("end")     // name of the input field
+	start := r.Form.Get("start")
+	end := r.Form.Get("end")
 
 	layout := "2006-01-02"
 	startDate, err := time.Parse(layout, start)
 	if err != nil {
-		helpers.ServerError(w, err)
+		m.App.Session.Put(r.Context(), "error", "can't parse start date!")
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
 
 	endDate, err := time.Parse(layout, end)
 	if err != nil {
-		helpers.ServerError(w, err)
+		m.App.Session.Put(r.Context(), "error", "can't parse end date!")
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
 
@@ -294,9 +296,9 @@ type jsonResponse struct {
 	EndDate   string `json:"end_date"`
 }
 
-// AvailabilityJSON handles request for availability and sends JSON response
+// AvailabilityJSON handles request for availability and send JSON response
 func (m *Repository) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
-	// nedeed to parse request body
+	// need to parse request body
 	err := r.ParseForm()
 	if err != nil {
 		// can't parse form, so return appropriate json
@@ -305,11 +307,7 @@ func (m *Repository) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
 			Message: "Internal server error",
 		}
 
-		out, err := json.MarshalIndent(resp, "", "    ")
-		if err != nil {
-			helpers.ServerError(w, err)
-			return
-		}
+		out, _ := json.MarshalIndent(resp, "", "     ")
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(out)
 		return
@@ -319,33 +317,20 @@ func (m *Repository) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
 	ed := r.Form.Get("end")
 
 	layout := "2006-01-02"
-	startDate, err := time.Parse(layout, sd)
-	if err != nil {
-		m.App.ErrorLog.Println(err)
-	}
-	endDate, err := time.Parse(layout, ed)
-	if err != nil {
-		m.App.ErrorLog.Println(err)
-	}
+	startDate, _ := time.Parse(layout, sd)
+	endDate, _ := time.Parse(layout, ed)
 
-	roomID, err := strconv.Atoi(r.Form.Get("room_id"))
-	if err != nil {
-		m.App.ErrorLog.Println(err)
-	}
+	roomID, _ := strconv.Atoi(r.Form.Get("room_id"))
 
 	available, err := m.DB.SearchAvailabilityByDatesByRoomID(startDate, endDate, roomID)
 	if err != nil {
-		// can't parse form, so return appropriate json
+		// got a database error, so return appropriate json
 		resp := jsonResponse{
 			OK:      false,
-			Message: "Error connecting to database",
+			Message: "Error querying database",
 		}
 
-		out, err := json.MarshalIndent(resp, "", "    ")
-		if err != nil {
-			helpers.ServerError(w, err)
-			return
-		}
+		out, _ := json.MarshalIndent(resp, "", "     ")
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(out)
 		return
@@ -358,11 +343,13 @@ func (m *Repository) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
 		RoomID:    strconv.Itoa(roomID),
 	}
 
-	// I removed the error check, since we handle all aspects of the json right here
-	out, _ := json.MarshalIndent(resp, "", "    ")
+	// I removed the error check, since we handle all aspects of
+	// the json right here
+	out, _ := json.MarshalIndent(resp, "", "     ")
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(out)
+
 }
 
 // Contact renders the contact page

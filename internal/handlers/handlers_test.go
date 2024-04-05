@@ -363,7 +363,15 @@ func TestRepository_PostAvailability(t *testing.T) {
 
 	// get the context with session
 	ctx := getCtx(req)
+	if ctx == nil {
+		log.Fatal("Context is nil")
+	}
+
 	req = req.WithContext(ctx)
+
+	if Repo == nil {
+		log.Fatal("Repo is nil")
+	}
 
 	// set the request header
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
@@ -641,7 +649,7 @@ func TestRepository_AvailabilityJSON(t *testing.T) {
 	handler.ServeHTTP(rr, req)
 
 	// this time we want to parse JSON and get the expected response
-	err = json.Unmarshal(rr.Body.Bytes(), &j)
+	err = json.Unmarshal([]byte(rr.Body.String()), &j)
 	if err != nil {
 		t.Error("failed to parse json!")
 	}
@@ -678,7 +686,7 @@ func TestRepository_AvailabilityJSON(t *testing.T) {
 	handler.ServeHTTP(rr, req)
 
 	// this time we want to parse JSON and get the expected response
-	err = json.Unmarshal(rr.Body.Bytes(), &j)
+	err = json.Unmarshal([]byte(rr.Body.String()), &j)
 	if err != nil {
 		t.Error("failed to parse json!")
 	}
