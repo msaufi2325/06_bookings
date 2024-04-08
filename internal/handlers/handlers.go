@@ -456,6 +456,34 @@ func (m *Repository) ShowLogin(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+// PostShowLogin handles the login form post
 func (m *Repository) PostShowLogin(w http.ResponseWriter, r *http.Request) {
-	log.Println("works")
+	_ = m.App.Session.RenewToken(r.Context())
+
+	err := r.ParseForm()
+	if err != nil {
+		log.Println(err)
+	}
+
+	email := r.Form.Get("email")
+	password := r.Form.Get("password")
+
+	form := forms.New(r.PostForm)
+	form.Required("email", "password")
+	// if !form.Valid() {
+	// 	// TODO - take user back to login page
+	// }
+
+	id, _, err := m.DB.Authenticate(email, password)
+	if err != nil {
+		log.Println(err)
+
+		m.App.Session.Put(r.Context(), "error", "Invalid login credentials")
+		http.Redirect(w, r, "/user/login", http.StatusSeeOther)
+		return
+	}
+
+	m.App.Session.Put(r.Context(), "user_id", id)
+	m.App.Session.Put(r.Context(), "flash", "Logged in successfully")
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
