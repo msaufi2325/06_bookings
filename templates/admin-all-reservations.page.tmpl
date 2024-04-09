@@ -31,7 +31,10 @@ All Reservations
       {{range $res}}
       <tr>
         <td>{{.ID}}</td>
-        <td>{{.LastName}}</td>
+        <td>
+					<a href="/admin/reservations/all/{{.ID}}">
+					{{.LastName}}
+				</td>
         <td>{{.FirstName}}</td>
         <td>{{.Room.RoomName}}</td>
         <td>{{ humanDate .StartDate }}</td>
@@ -51,6 +54,10 @@ All Reservations
   type="text/javascript"
 ></script>
 <script>
-  const dataTable = new simpleDatatables.DataTable("#all-res", {});
+	document.addEventListener("DOMContentLoaded", function () {
+		const dataTable = new simpleDatatables.DataTable("#all-res", {
+		select: 3, sort: "desc",
+		});
+	});
 </script>
 {{ end }}
