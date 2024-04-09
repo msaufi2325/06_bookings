@@ -34,7 +34,7 @@ All Reservations
         <td>{{.LastName}}</td>
         <td>{{.FirstName}}</td>
         <td>{{.Room.RoomName}}</td>
-        <td>{{.StartDate}}</td>
+        <td>{{ humanDate .StartDate }}</td>
         <td>{{.EndDate}}</td>
       </tr>
       {{
