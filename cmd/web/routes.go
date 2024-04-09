@@ -41,7 +41,8 @@ func routes(_ *config.AppConfig) http.Handler {
 	mux.Handle("/static/*", http.StripPrefix("/static", fileServer))
 
 	mux.Route("/admin", func(mux chi.Router) {
-		mux.Use(Auth)
+		// uncomment the line below to require authentication for the admin routes
+		// mux.Use(Auth)
 		mux.Get("/dashboard", handlers.Repo.AdminDashBoard)
 
 		mux.Get("/reservations-new", handlers.Repo.AdminNewReservations)
