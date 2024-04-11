@@ -552,11 +552,25 @@ func (m *Repository) AdminShowReservation(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	log.Println(id)
+	src := exploded[3]
+	stringMap := make(map[string]string)
+	stringMap["src"] = src
 
 	// get reservation from the database
+	res, err := m.DB.GetReservationByID(id)
+	if err != nil {
+		m.App.Session.Put(r.Context(), "error", "Can't find reservation")
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
+	}
 
-	render.Template(w, r, "admin-reservation-show.page.tmpl", &models.TemplateData{})
+	data := make(map[string]interface{})
+	data["reservation"] = res
+
+	render.Template(w, r, "admin-reservation-show.page.tmpl", &models.TemplateData{
+		StringMap: stringMap,
+		Data:      data,
+	})
 }
 
 // AdminReservationsCalendar shows the reservation calendar on the admin dashboard
