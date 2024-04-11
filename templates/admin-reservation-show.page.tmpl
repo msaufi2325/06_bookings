@@ -8,7 +8,6 @@ Reservation
 {{$res := index .Data "reservation"}}
 {{$src := index .StringMap "src"}}
 
-{{ if $res }}
 <div class="col-md-12">
 	<p>
 	<strong>Arrival:</strong> {{humanDate $res.StartDate}}<br />
