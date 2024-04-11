@@ -541,6 +541,12 @@ func (m *Repository) AdminAllReservations(w http.ResponseWriter, r *http.Request
 	})
 }
 
+// AdminShowReservation shows the reservation on the admin dashboard
+func (m *Repository) AdminShowReservation(w http.ResponseWriter, r *http.Request) {
+	render.Template(w, r, "admin-reservation-show.page.tmpl", &models.TemplateData{})
+}
+
+// AdminReservationsCalendar shows the reservation calendar on the admin dashboard
 func (m *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http.Request) {
 	render.Template(w, r, "admin-reservations-calendar.page.tmpl", &models.TemplateData{})
 }
