@@ -543,7 +543,19 @@ func (m *Repository) AdminAllReservations(w http.ResponseWriter, r *http.Request
 
 // AdminShowReservation shows the reservation on the admin dashboard
 func (m *Repository) AdminShowReservation(w http.ResponseWriter, r *http.Request) {
+	// get the URL parameters
+	exploded := strings.Split(r.RequestURI, "/")
+	id, err := strconv.Atoi(exploded[4])
+	if err != nil {
+		m.App.Session.Put(r.Context(), "error", "missing url parameter")
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
+	}
+
+	log.Println(id)
+
 	// get reservation from the database
+
 	render.Template(w, r, "admin-reservation-show.page.tmpl", &models.TemplateData{})
 }
 
