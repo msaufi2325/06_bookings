@@ -241,7 +241,7 @@ func (m *postgresDBRepo) AllReservations() ([]models.Reservation, error) {
 
 	query := `
 		select r.id, r.first_name, r.last_name, r.email, r.phone, r.start_date, 
-		r.end_date, r.room_id, r.created_at, r.updated_at, r.processed,
+		r.end_date, r.room_id, r.created_at, r.updated_at,
 		rm.id, rm.room_name 
 		from reservations r
 		left join rooms rm on (r.room_id = rm.id)
@@ -267,7 +267,6 @@ func (m *postgresDBRepo) AllReservations() ([]models.Reservation, error) {
 			&i.RoomID,
 			&i.CreatedAt,
 			&i.UpdatedAt,
-			&i.Processed,
 			&i.Room.ID,
 			&i.Room.RoomName,
 		)
@@ -294,11 +293,11 @@ func (m *postgresDBRepo) AllNewReservations() ([]models.Reservation, error) {
 
 	query := `
 		select r.id, r.first_name, r.last_name, r.email, r.phone, r.start_date, 
-		r.end_date, r.room_id, r.created_at, r.updated_at,
+		r.end_date, r.room_id, r.created_at, r.updated_at, r.processed,
 		rm.id, rm.room_name 
 		from reservations r
 		left join rooms rm on (r.room_id = rm.id)
-		where procesed = 0
+		where processed = 0
 		order by r.start_date asc
 	`
 
@@ -321,6 +320,7 @@ func (m *postgresDBRepo) AllNewReservations() ([]models.Reservation, error) {
 			&i.RoomID,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.Processed,
 			&i.Room.ID,
 			&i.Room.RoomName,
 		)
