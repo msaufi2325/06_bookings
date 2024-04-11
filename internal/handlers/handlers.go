@@ -543,6 +543,7 @@ func (m *Repository) AdminAllReservations(w http.ResponseWriter, r *http.Request
 
 // AdminShowReservation shows the reservation on the admin dashboard
 func (m *Repository) AdminShowReservation(w http.ResponseWriter, r *http.Request) {
+	// get reservation from the database
 	render.Template(w, r, "admin-reservation-show.page.tmpl", &models.TemplateData{})
 }
 

@@ -128,3 +128,9 @@ func (m *testDBRepo) AllNewReservations() ([]models.Reservation, error) {
 	var reservations []models.Reservation
 	return reservations, nil
 }
+
+// GetReservationByID returns one reservation by id
+func (m *testDBRepo) GetReservationByID(id int) (models.Reservation, error) {
+	var res models.Reservation
+	return res, nil
+}
