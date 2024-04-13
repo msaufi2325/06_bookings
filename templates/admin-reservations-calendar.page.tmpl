@@ -38,6 +38,14 @@ Reservations Calendar
 						</td>
 					{{end}}
 				</tr>
+
+				<tr>
+					{{range $index := iterate $dim}}
+						<td class="text-center">
+							<input type="checkbox" >						
+						</td>
+					{{end}}
+				</tr>
 			</table>
 		</div>
 	{{end}}
