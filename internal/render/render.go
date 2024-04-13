@@ -18,10 +18,21 @@ import (
 var functions = template.FuncMap{
 	"humanDate":  HumanDate,
 	"formatDate": FormatDate,
+	"iterate":    Iterate,
 }
 
 var app *config.AppConfig
 var pathToTemplates = "./templates"
+
+// Iterate is a function that generates a slice of integers starting at 0 and ending at count
+func Iterate(count int) []int {
+	var i int
+	var items []int
+	for i = 0; i < count; i++ {
+		items = append(items, i)
+	}
+	return items
+}
 
 // NewRenderer sets the config for the template package
 func NewRenderer(a *config.AppConfig) {
