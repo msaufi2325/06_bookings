@@ -27,14 +27,14 @@ Reservations Calendar
 	{{range $rooms}}
 		{{$roomID := .ID}}
 
-		<h4>{{.RoomName}}</h4>
+		<h4 class="mt-4">{{.RoomName}}</h4>
 
 		<div class="table-response">
 			<table class="table table-bordered table-sm">
 				<tr class="table-dark">
 					{{range $index := iterate $dim}}
 						<td class="text-center">
-							{{$index}}
+							{{add $index 1}}
 						</td>
 					{{end}}
 				</tr>
