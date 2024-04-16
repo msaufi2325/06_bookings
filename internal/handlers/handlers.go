@@ -773,8 +773,13 @@ func (m *Repository) AdminPostReservationsCalendar(w http.ResponseWriter, r *htt
 	}
 
 	// now handle new blocks
-	for name, _ := range r.PostForm {
-		log.Println("Form has name: ", name)
+	for name := range r.PostForm {
+		if strings.HasPrefix(name, "add_block") {
+			exploded := strings.Split(name, "_")
+			roomID, _ := strconv.Atoi(exploded[2])
+			// insert a new block
+			log.Println("Would insert block for room id: ", roomID, "for date:", exploded[3])
+		}
 	}
 
 	m.App.Session.Put(r.Context(), "flash", "Changes saved")
