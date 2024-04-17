@@ -81,8 +81,8 @@ func (m *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
 
 	m.App.Session.Put(r.Context(), "reservation", res)
 
-	sd := res.StartDate.Format("2006-01-02")
-	ed := res.EndDate.Format("2006-01-02")
+	sd := res.StartDate.Format("2006-01-2")
+	ed := res.EndDate.Format("2006-01-2")
 
 	stringMap := make(map[string]string)
 	stringMap["start_date"] = sd
@@ -112,7 +112,7 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 
 	// 2020-01-01 -- 01/02 03:04:05PM '06 -0700
 
-	layout := "2006-01-02"
+	layout := "2006-01-2"
 
 	startDate, err := time.Parse(layout, sd)
 	if err != nil {
@@ -189,7 +189,7 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 		<strong>Reservation Confirmation</strong><br>
 		Dear %s, <br>
 		This is to confirm your reservation from %s to %s.
-	`, reservation.FirstName, reservation.StartDate.Format("2006-01-02"), reservation.EndDate.Format("2006-01-02"))
+	`, reservation.FirstName, reservation.StartDate.Format("2006-01-2"), reservation.EndDate.Format("2006-01-2"))
 
 	msg := models.MailData{
 		To:       reservation.Email,
@@ -205,7 +205,7 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 	htmlMessage = fmt.Sprintf(`
 		<strong>Reservation Notification</strong><br>
 		A reservation has been made for room %s from %s to %s.
-	`, reservation.Room.RoomName, reservation.StartDate.Format("2006-01-02"), reservation.EndDate.Format("2006-01-02"))
+	`, reservation.Room.RoomName, reservation.StartDate.Format("2006-01-2"), reservation.EndDate.Format("2006-01-2"))
 
 	msg = models.MailData{
 		To:      "me@here.com",
@@ -249,7 +249,7 @@ func (m *Repository) PostAvailability(w http.ResponseWriter, r *http.Request) {
 	start := r.Form.Get("start")
 	end := r.Form.Get("end")
 
-	layout := "2006-01-02"
+	layout := "2006-01-2"
 	startDate, err := time.Parse(layout, start)
 	if err != nil {
 		m.App.Session.Put(r.Context(), "error", "can't parse start date!")
@@ -320,7 +320,7 @@ func (m *Repository) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
 	sd := r.Form.Get("start")
 	ed := r.Form.Get("end")
 
-	layout := "2006-01-02"
+	layout := "2006-01-2"
 	startDate, _ := time.Parse(layout, sd)
 	endDate, _ := time.Parse(layout, ed)
 
@@ -375,8 +375,8 @@ func (m *Repository) ReservationSummary(w http.ResponseWriter, r *http.Request) 
 	data := make(map[string]interface{})
 	data["reservation"] = reservation
 
-	sd := reservation.StartDate.Format("2006-01-02")
-	ed := reservation.EndDate.Format("2006-01-02")
+	sd := reservation.StartDate.Format("2006-01-2")
+	ed := reservation.EndDate.Format("2006-01-2")
 	stringMap := make(map[string]string)
 	stringMap["start_date"] = sd
 	stringMap["end_date"] = ed
@@ -429,7 +429,7 @@ func (m *Repository) BookRoom(w http.ResponseWriter, r *http.Request) {
 	sd := r.URL.Query().Get("s")
 	ed := r.URL.Query().Get("e")
 
-	layout := "2006-01-02"
+	layout := "2006-01-2"
 	startDate, _ := time.Parse(layout, sd)
 	endDate, _ := time.Parse(layout, ed)
 
@@ -683,8 +683,8 @@ func (m *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http.Re
 		reservationMap := make(map[string]int)
 
 		for d := firstOfMonth; !d.After(lastOfMonth); d = d.AddDate(0, 0, 1) {
-			blockMap[d.Format("2006-01-02")] = 0
-			reservationMap[d.Format("2006-01-02")] = 0
+			blockMap[d.Format("2006-01-2")] = 0
+			reservationMap[d.Format("2006-01-2")] = 0
 		}
 
 		// get all restrictions for the current room
@@ -697,10 +697,10 @@ func (m *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http.Re
 		for _, y := range roomRestrictions {
 			if y.ReservationID > 0 {
 				for d := y.StartDate; !d.After(y.EndDate); d = d.AddDate(0, 0, 1) {
-					reservationMap[d.Format("2006-01-02")] = y.ReservationID
+					reservationMap[d.Format("2006-01-2")] = y.ReservationID
 				}
 			} else {
-				blockMap[y.StartDate.Format("2006-01-02")] = y.ID
+				blockMap[y.StartDate.Format("2006-01-2")] = y.ID
 			}
 		}
 		data[fmt.Sprintf("block_map_%d", x.ID)] = blockMap
@@ -765,7 +765,10 @@ func (m *Repository) AdminPostReservationsCalendar(w http.ResponseWriter, r *htt
 				if val > 0 {
 					if !form.Has(fmt.Sprintf("remove_block_%d_%s", x.ID, name)) {
 						// delete the restriction by id
-						log.Println("NEED TO REMOVE BLOCK:", value)
+						err := m.DB.DeleteBlockByID(value)
+						if err != nil {
+							log.Println(err)
+						}
 					}
 				}
 			}
@@ -777,8 +780,12 @@ func (m *Repository) AdminPostReservationsCalendar(w http.ResponseWriter, r *htt
 		if strings.HasPrefix(name, "add_block") {
 			exploded := strings.Split(name, "_")
 			roomID, _ := strconv.Atoi(exploded[2])
+			t, _ := time.Parse("2006-01-2", exploded[3])
 			// insert a new block
-			log.Println("Would insert block for room id: ", roomID, "for date:", exploded[3])
+			err := m.DB.InsertBlockForRoom(roomID, t)
+			if err != nil {
+				log.Println(err)
+			}
 		}
 	}
 
