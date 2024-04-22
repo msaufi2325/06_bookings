@@ -33,6 +33,13 @@ var theTests = []struct {
 	{"sa", "/search-availability", "GET", http.StatusOK},
 	{"contact", "/contact", "GET", http.StatusOK},
 	{"non-existent", "/green/eggs/and/ham", "GET", http.StatusNotFound},
+	// new routes
+	{"login", "/user/login", "GET", http.StatusOK},
+	{"logout", "/user/logout", "GET", http.StatusOK},
+	{"dashboard", "/admin/dashboard", "GET", http.StatusOK},
+	{"reservations-new", "/admin/reservations-new", "GET", http.StatusOK},
+	{"reservations-all", "/admin/reservations-all", "GET", http.StatusOK},
+	{"show res", "/admin/reservations/new/1/show", "GET", http.StatusOK},
 
 	//{"post-search-avail", "/search-availability", "POST", []postData{
 	//	{key: "start", value: "2020-01-01"},
