@@ -803,6 +803,7 @@ func TestRepository_BookRoom(t *testing.T) {
 	}
 }
 
+// getCtx is a helper function that returns a context with session
 func getCtx(req *http.Request) context.Context {
 	ctx, err := session.Load(req.Context(), req.Header.Get("X-Session"))
 	if err != nil {
