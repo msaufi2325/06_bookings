@@ -32,6 +32,7 @@ var theTests = []struct {
 	{"ms", "/majors-suite", "GET", http.StatusOK},
 	{"sa", "/search-availability", "GET", http.StatusOK},
 	{"contact", "/contact", "GET", http.StatusOK},
+	{"non-existent", "/green/eggs/and/ham", "GET", http.StatusNotFound},
 
 	//{"post-search-avail", "/search-availability", "POST", []postData{
 	//	{key: "start", value: "2020-01-01"},
