@@ -844,6 +844,15 @@ func TestLogin(t *testing.T) {
 		if rr.Code != e.expectedStatusCode {
 			t.Errorf("for %s, expected %d but got %d", e.name, e.expectedStatusCode, rr.Code)
 		}
+
+		// check the location
+		if e.expectedLocation != "" {
+			// get the URL from test
+			actualLoc, _ := rr.Result().Location()
+			if actualLoc.String() != e.expectedLocation {
+				t.Errorf("for %s, expected %s but got %s", e.name, e.expectedLocation, actualLoc.String())
+			}
+		}
 	}
 }
 
