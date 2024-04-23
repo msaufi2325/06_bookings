@@ -813,10 +813,17 @@ var loginTests = []struct {
 }{
 	{
 		"valid-credentials",
-		"me@here.com",
+		"me@here.ca",
 		http.StatusSeeOther,
 		"",
 		"/",
+	},
+	{
+		"invalid-credentials",
+		"jack@nimble.com",
+		http.StatusSeeOther,
+		"",
+		"/user/login",
 	},
 }
 
