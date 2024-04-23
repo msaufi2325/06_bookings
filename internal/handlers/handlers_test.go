@@ -825,6 +825,13 @@ var loginTests = []struct {
 		"",
 		"/user/login",
 	},
+	{
+		"invalid-data",
+		"j",
+		http.StatusOK,
+		`action="/user/login"`,
+		"",
+	},
 }
 
 func TestLogin(t *testing.T) {
