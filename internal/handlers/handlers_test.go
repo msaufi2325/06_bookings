@@ -853,6 +853,15 @@ func TestLogin(t *testing.T) {
 				t.Errorf("for %s, expected %s but got %s", e.name, e.expectedLocation, actualLoc.String())
 			}
 		}
+
+		// checking for expected values in HTML
+		if e.expectedHTML != "" {
+			// read the response body into a string
+			html := rr.Body.String()
+			if !strings.Contains(html, e.expectedHTML) {
+				t.Errorf("for %s, expected %s but did not find it", e.name, e.expectedHTML)
+			}
+		}
 	}
 }
 
