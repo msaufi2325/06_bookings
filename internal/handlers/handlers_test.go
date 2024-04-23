@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"reflect"
 	"strings"
 	"testing"
@@ -800,6 +801,49 @@ func TestRepository_BookRoom(t *testing.T) {
 
 	if rr.Code != http.StatusSeeOther {
 		t.Errorf("BookRoom handler returned wrong response code: got %d, wanted %d", rr.Code, http.StatusSeeOther)
+	}
+}
+
+var loginTests = []struct {
+	name               string
+	email              string
+	expectedStatusCode int
+	expectedHTML       string
+	expectedLocation   string
+}{
+	{
+		"valid-credentials",
+		"me@here.com",
+		http.StatusSeeOther,
+		"",
+		"/",
+	},
+}
+
+func TestLogin(t *testing.T) {
+	// range through all tests
+	for _, e := range loginTests {
+		postedData := url.Values{}
+		postedData.Add("email", e.email)
+		postedData.Add("password", "password")
+
+		// create request
+		req, _ := http.NewRequest("POST", "/user/login", strings.NewReader(postedData.Encode()))
+		ctx := getCtx(req)
+		req = req.WithContext(ctx)
+
+		// set the request header
+		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+		rr := httptest.NewRecorder()
+
+		// call the handler
+		handler := http.HandlerFunc(Repo.PostShowLogin)
+		handler.ServeHTTP(rr, req)
+
+		// check the status code
+		if rr.Code != e.expectedStatusCode {
+			t.Errorf("for %s, expected %d but got %d", e.name, e.expectedStatusCode, rr.Code)
+		}
 	}
 }
 
