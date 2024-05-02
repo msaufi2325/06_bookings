@@ -804,6 +804,7 @@ func TestRepository_BookRoom(t *testing.T) {
 	}
 }
 
+// loginTests is the data for the login handler tests
 var loginTests = []struct {
 	name               string
 	email              string
