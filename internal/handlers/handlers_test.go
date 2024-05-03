@@ -880,6 +880,80 @@ func TestLogin(t *testing.T) {
 	}
 }
 
+var adminPostShowReservationTests = []struct {
+	name               string
+	url                string
+	postedData         url.Values
+	expectedStatusCode int
+	expectedLocation   string
+	expectedHTML       string
+}{
+	{
+		name: "valid-data-from-new",
+		url:  "/admin/reservations/new/1/show",
+		postedData: url.Values{
+			"first_name": {"John"},
+			"last_name":  {"Smith"},
+			"email":      {"john@smith.com"},
+			"phone":      {"555-555-5555"},
+		},
+		expectedStatusCode: http.StatusSeeOther,
+		expectedLocation:   "/admin/reservations-new",
+		expectedHTML:       "",
+	},
+	{
+		name: "valid-data-from-all",
+		url:  "/admin/reservations/all/1/show",
+		postedData: url.Values{
+			"first_name": {"John"},
+			"last_name":  {"Smith"},
+			"email":      {"john@smith.com"},
+			"phone":      {"555-555-5555"},
+		},
+		expectedStatusCode: http.StatusSeeOther,
+		expectedLocation:   "/admin/reservations-all",
+		expectedHTML:       "",
+	},
+	{
+		name: "valid-data-from-cal",
+		url:  "/admin/reservations/cal/1/show",
+		postedData: url.Values{
+			"first_name": {"John"},
+			"last_name":  {"Smith"},
+			"email":      {"john@smith.com"},
+			"phone":      {"555-555-5555"},
+			"year":       {"2025"},
+			"month":      {"01"},
+		},
+		expectedStatusCode: http.StatusSeeOther,
+		expectedLocation:   "/admin/reservations-calendar?y=2025&m=01",
+		expectedHTML:       "",
+	},
+}
+
+// TestAdminPostShowReservation tests the AdminPostReservation handler
+func TestAdminPostShowReservation(t *testing.T) {
+	for _, e := range adminPostShowReservationTests {
+		var req *http.Request
+		if e.postedData != nil {
+			req, _ = http.NewRequest("POST", "/user/login", strings.NewReader(e.postedData.Encode()))
+		} else {
+			req, _ = http.NewRequest("POST", "/user/login", nil)
+		}
+		ctx := getCtx(req)
+		req = req.WithContext(ctx)
+		req.RequestURI = e.url
+
+		// set the header
+		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+		rr := httptest.NewRecorder()
+
+		// call the handler
+		handler := http.HandlerFunc(Repo.AdminPostShowReservation)
+		handler.ServeHTTP(rr, req)
+	}
+}
+
 // getCtx is a helper function that returns a context with session
 func getCtx(req *http.Request) context.Context {
 	ctx, err := session.Load(req.Context(), req.Header.Get("X-Session"))
