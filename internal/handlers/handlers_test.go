@@ -11,6 +11,7 @@ import (
 	"reflect"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/msaufi2325/06_bookings/internal/driver"
 	"github.com/msaufi2325/06_bookings/internal/models"
@@ -973,6 +974,38 @@ func TestAdminPostShowReservation(t *testing.T) {
 			}
 		}
 	}
+}
+
+var adminPostReservationCalendarTests = []struct {
+	name                 string
+	postedData           url.Values
+	expectedResponseCode int
+	expectedLocation     string
+	expectedHTML         string
+	blocks               int
+	reservations         int
+}{
+	{
+		name: "cal",
+		postedData: url.Values{
+			"year":  {time.Now().Format("2006")},
+			"month": {time.Now().Format("01")},
+			fmt.Sprintf("add_block_1_%s", time.Now().AddDate(0, 0, 2).Format("2006-01-2")): {"1"},
+		},
+		expectedResponseCode: http.StatusSeeOther,
+	},
+	{
+		name:                 "cal-blocks",
+		postedData:           url.Values{},
+		expectedResponseCode: http.StatusSeeOther,
+		blocks:               1,
+	},
+	{
+		name:                 "cal-res",
+		postedData:           url.Values{},
+		expectedResponseCode: http.StatusSeeOther,
+		reservations:         1,
+	},
 }
 
 // getCtx is a helper function that returns a context with session
