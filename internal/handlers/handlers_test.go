@@ -39,9 +39,11 @@ var theTests = []struct {
 	{"login", "/user/login", "GET", http.StatusOK},
 	{"logout", "/user/logout", "GET", http.StatusOK},
 	{"dashboard", "/admin/dashboard", "GET", http.StatusOK},
-	{"reservations-new", "/admin/reservations-new", "GET", http.StatusOK},
-	{"reservations-all", "/admin/reservations-all", "GET", http.StatusOK},
+	{"res new", "/admin/reservations-new", "GET", http.StatusOK},
+	{"all res", "/admin/reservations-all", "GET", http.StatusOK},
 	{"show res", "/admin/reservations/new/1/show", "GET", http.StatusOK},
+	{"show res cal", "/admin/reservations-calendar", "GET", http.StatusOK},
+	{"show res cal with params", "/admin/reservations-calendar?y=2025&m=1", "GET", http.StatusOK},
 
 	//{"post-search-avail", "/search-availability", "POST", []postData{
 	//	{key: "start", value: "2020-01-01"},
